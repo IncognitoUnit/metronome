@@ -9,7 +9,7 @@ export default defineConfig({
 		sveltekit(),
 		paraglide({
 			project: './project.inlang',
-			outdir: './src/lib/paraglide'
-		})
-	]
+			outdir: './src/lib/paraglide',
+		}),
+	],
 });
