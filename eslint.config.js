@@ -1,6 +1,7 @@
 import prettier from 'eslint-config-prettier';
 import js from '@eslint/js';
 import { includeIgnoreFile } from '@eslint/compat';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import { fileURLToPath } from 'node:url';
@@ -21,6 +22,9 @@ export default ts.config(
 				...globals.browser,
 				...globals.node,
 			},
+		},
+		plugins: {
+			'simple-import-sort': simpleImportSort,
 		},
 	},
 	{
