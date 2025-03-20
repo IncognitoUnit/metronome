@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Button as ButtonPrimitive } from 'bits-ui';
 
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
-	import { buttonVariants, type Props } from './index.js';
+	import { buttonVariants, type Props } from './index';
 
-	let { variant, size, className, children, ...restProps }: Props = $props();
+	let { variant, size, class: className, children, ...restProps }: Props = $props();
 </script>
 
-<ButtonPrimitive.Root class={cn(buttonVariants({ variant, size, className }))} {...restProps}>
+<ButtonPrimitive.Root class={cn(buttonVariants({ variant, size }), className)} {...restProps}>
 	{@render children?.()}
 </ButtonPrimitive.Root>

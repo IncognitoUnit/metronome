@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-
 	import { Slider as SliderPrimitive } from 'bits-ui';
 
-	import { type Props } from './index.js';
+	import { cn } from '$lib/utils';
 
-	let { className, ...restProps }: Props = $props();
+	import { type Props } from './index';
+
+	let { class: className, ...restProps }: Props = $props();
 </script>
 
 <SliderPrimitive.Root

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { toggleMode, mode } from 'mode-watcher';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import { Moon, Sun } from '@lucide/svelte';
+	import { mode,toggleMode } from 'mode-watcher';
+
+	import { Button } from '$lib/components/ui/button/index.js';
 </script>
 
 <Button size="icon" onclick={toggleMode} aria-label="Toggle dark mode">

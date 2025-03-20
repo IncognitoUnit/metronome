@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { Minus, Pause, Play, Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+
 	import { Button } from './ui/button';
 	import { Slider } from './ui/slider';
-	import { Minus, Pause, Play, Plus } from '@lucide/svelte';
 
 	// Constraints
 	const MIN_BPM = 20;

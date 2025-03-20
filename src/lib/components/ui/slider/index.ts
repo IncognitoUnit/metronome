@@ -1,5 +1,6 @@
-import Root from './slider.svelte';
 import { Slider as SliderPrimitive } from 'bits-ui';
+
+import Root from './slider.svelte';
 
 type Props = SliderPrimitive.RootProps & {
 	className?: string;
