@@ -7,7 +7,7 @@ A simple metronome app built with Svelte.
 - [Bits UI](https://bits-ui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Svelte](https://svelte.dev/)
-- [Icons](https://www.svgrepo.com/collection/dazzle-line-icons/)
+- [Icons](https://lucide.dev/)
 
 ## sv
 

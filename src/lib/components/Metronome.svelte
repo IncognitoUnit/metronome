@@ -2,10 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Button } from './ui/button';
 	import { Slider } from './ui/slider';
-	import PlusIcon from '$lib/icons/PlusIcon.svelte';
-	import MinusIcon from '$lib/icons/MinusIcon.svelte';
-	import PauseCircleIcon from '$lib/icons/PauseCircleIcon.svelte';
-	import PlayCircleIcon from '$lib/icons/PlayCircleIcon.svelte';
+	import { Minus, Pause, Play, Plus } from '@lucide/svelte';
 
 	// Constraints
 	const MIN_BPM = 20;
@@ -109,7 +106,7 @@
 
 	<div class="flex items-center gap-4">
 		<Button onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
-			<MinusIcon />
+			<Minus />
 		</Button>
 		<Button
 			onclick={togglePlay}
@@ -118,13 +115,13 @@
 			aria-label={isPlaying ? 'Pause' : 'Play'}
 		>
 			{#if isPlaying}
-				<PauseCircleIcon />
+				<Pause />
 			{:else}
-				<PlayCircleIcon />
+				<Play />
 			{/if}
 		</Button>
 		<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
-			<PlusIcon />
+			<Plus />
 		</Button>
 	</div>
 </div>
