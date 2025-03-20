@@ -84,11 +84,10 @@
 </script>
 
 <div
-	class="mx-auto flex w-full flex-col items-center gap-6 rounded-lg bg-white px-4 py-4 shadow-md"
+	class="bg-background mx-auto flex w-full flex-col items-center gap-6 rounded-lg px-4 py-4 shadow-md"
 >
 	<div class="font-mono text-5xl">{bpm} BPM</div>
-
-	<div class="w-full px-4">
+	<div class="flex w-full flex-col gap-3 px-4">
 		<Slider
 			min={MIN_BPM}
 			max={MAX_BPM}
@@ -98,7 +97,7 @@
 				bpm = newBpm;
 			}}
 		/>
-		<div class="-mx-2 mt-2.5 flex justify-between text-xs text-gray-500">
+		<div class="text-muted-foreground -mx-2 flex justify-between text-xs">
 			<span>{MIN_BPM}</span>
 			<span>{MAX_BPM}</span>
 		</div>
@@ -114,11 +113,11 @@
 			size="icon"
 			aria-label={isPlaying ? 'Pause' : 'Play'}
 		>
-			{#if isPlaying}
-				<Pause />
-			{:else}
-				<Play />
-			{/if}
+			<Play class="scale-100 transition-all data-[active=false]:scale-0" data-active={!isPlaying} />
+			<Pause
+				class="absolute scale-0 transition-all data-[active=true]:scale-100"
+				data-active={isPlaying}
+			/>
 		</Button>
 		<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
 			<Plus />
