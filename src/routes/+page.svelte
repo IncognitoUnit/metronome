@@ -7,7 +7,6 @@
 	<meta name="description" content="Metronome" />
 </svelte:head>
 
-<section class="container mx-auto p-4">
-	<h1 class="mb-8 text-center text-3xl font-bold">Web Metronome</h1>
+<section class="container mx-auto">
 	<Metronome />
 </section>

@@ -92,3 +92,5 @@
 
 	--color-ring: hsl(var(--ring));
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
