@@ -2,16 +2,24 @@
 	import { Minus, Pause, Play, Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
+	import SignatureDialog from './SignatureDialog.svelte';
 	import { Button } from './ui/button';
 	import { Slider } from './ui/slider';
 
 	// Constraints
 	const MIN_BPM = 20;
 	const MAX_BPM = 240;
+	const STARTING_BEAT = -1;
 
 	// Metronome state
 	let bpm = $state(MAX_BPM / 2);
 	let isPlaying = $state(false);
+	let beatsPerMeasure = $state(4);
+	let beatUnit = $state(4);
+	let currentBeat = $state(STARTING_BEAT);
+
+	// Create an array for beat indicators
+	let beatIndicators = $derived(Array.from({ length: beatsPerMeasure }, (_, index) => index));
 
 	// Audio context
 	let audioContext: AudioContext | null = $state(null);
@@ -23,6 +31,9 @@
 
 	function togglePlay() {
 		isPlaying = !isPlaying;
+		if (isPlaying) {
+			currentBeat = STARTING_BEAT;
+		}
 	}
 
 	function scheduleClicks() {
@@ -40,15 +51,20 @@
 			const intervalMs = 60000 / bpm;
 
 			clickSchedulerTimerId = setInterval(() => {
-				// Create and play a quick beep sound
+				// Increment beat and wrap around
+				currentBeat = (currentBeat + 1) % beatsPerMeasure;
+
+				// Create and play a sound, first beat has higher pitch
+				const isFirstBeat = currentBeat === 0;
 				const oscillator = audioContext!.createOscillator();
 				const gainNode = audioContext!.createGain();
 
 				oscillator.connect(gainNode);
 				gainNode.connect(audioContext!.destination);
 
-				oscillator.frequency.value = 1000;
-				gainNode.gain.value = 1;
+				// Higher frequency for the first beat
+				oscillator.frequency.value = isFirstBeat ? 1500 : 1000;
+				gainNode.gain.value = isFirstBeat ? 1.2 : 1;
 
 				// Quick fade out
 				gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext!.currentTime + 0.1);
@@ -69,6 +85,16 @@
 				clearInterval(clickSchedulerTimerId);
 				clickSchedulerTimerId = null;
 			}
+		}
+	});
+
+	// Track time signature changes
+	$effect(() => {
+		// If time signature changes while playing, restart
+		if (isPlaying) {
+			// Reset current beat and reschedule
+			currentBeat = STARTING_BEAT;
+			scheduleClicks();
 		}
 	});
 
@@ -110,7 +136,7 @@
 		</Button>
 		<Button
 			onclick={togglePlay}
-			variant={isPlaying ? 'destructive' : 'default'}
+			variant={isPlaying ? 'outline' : 'default'}
 			size="icon"
 			aria-label={isPlaying ? 'Pause' : 'Play'}
 		>
@@ -123,5 +149,21 @@
 		<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
 			<Plus />
 		</Button>
+	</div>
+
+	<div class="flex items-center gap-2">
+		<SignatureDialog bind:beatsPerMeasure bind:beatUnit />
+		<div class="text-muted-foreground font-mono text-sm">
+			{beatsPerMeasure}/{beatUnit}
+		</div>
+	</div>
+
+	<div class="flex w-full justify-center gap-2 pt-2">
+		{#each beatIndicators as idx (idx)}
+			<div
+				class="data-[active=true]:bg-primary bg-muted size-3 rounded-full transition-all"
+				data-active={currentBeat === idx && isPlaying}
+			></div>
+		{/each}
 	</div>
 </div>
