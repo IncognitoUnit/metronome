@@ -1,4 +1,15 @@
-# sv
+# Metronome
+
+A simple metronome app built with Svelte.
+
+## Resources
+
+- [Bits UI](https://bits-ui.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Svelte](https://svelte.dev/)
+- [Icons](https://www.svgrepo.com/collection/dazzle-line-icons/)
+
+## sv
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
