@@ -7,6 +7,6 @@
 	<meta name="description" content="Metronome" />
 </svelte:head>
 
-<section class="container mx-auto">
+<section class="container mx-auto flex flex-1">
 	<Metronome />
 </section>

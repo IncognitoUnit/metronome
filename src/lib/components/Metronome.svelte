@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Minus, Pause, Play, Plus } from '@lucide/svelte';
+	import { Minus, Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	import SignatureDialog from './SignatureDialog.svelte';
@@ -10,6 +10,11 @@
 	const MIN_BPM = 20;
 	const MAX_BPM = 240;
 	const STARTING_BEAT = -1;
+
+	// Keyboard codes
+	const PLAY_CODE = ['Space'];
+	const BPM_INCREASE_CODE = ['Equal', 'ArrowRight', 'ArrowUp'];
+	const BPM_DECREASE_CODE = ['Minus', 'ArrowLeft', 'ArrowDown'];
 
 	// Metronome state
 	let bpm = $state(MAX_BPM / 2);
@@ -33,6 +38,33 @@
 		isPlaying = !isPlaying;
 		if (isPlaying) {
 			currentBeat = STARTING_BEAT;
+		}
+	}
+
+	function handleKeyup(event: KeyboardEvent) {
+		// Only handle keys if no element is actively focused (like inputs, buttons, etc.)
+		// This prevents interference with form controls and other interactive elements
+		const activeElement = document.activeElement;
+		console.log(activeElement);
+		const tagName = activeElement?.tagName.toLowerCase();
+
+		// Skip if the active element is an input, button, textarea, select or has role="button"
+		if (activeElement && tagName !== 'body') {
+			return;
+		}
+
+		// Process keyboard shortcuts
+		if (PLAY_CODE.includes(event.code)) {
+			event.preventDefault();
+			togglePlay();
+		}
+		if (BPM_DECREASE_CODE.includes(event.code)) {
+			event.preventDefault();
+			changeBpm(-1);
+		}
+		if (BPM_INCREASE_CODE.includes(event.code)) {
+			event.preventDefault();
+			changeBpm(1);
 		}
 	}
 
@@ -99,6 +131,9 @@
 	});
 
 	onMount(() => {
+		// Add keyboard event listener when component mounts
+		window.addEventListener('keyup', handleKeyup);
+
 		return () => {
 			if (clickSchedulerTimerId) {
 				clearInterval(clickSchedulerTimerId);
@@ -106,64 +141,63 @@
 			if (audioContext) {
 				audioContext.close();
 			}
+			// Remove event listener when component unmounts
+			window.removeEventListener('keyup', handleKeyup);
 		};
 	});
 </script>
 
 <div
-	class="bg-background mx-auto flex w-full flex-col items-center gap-6 rounded-lg px-4 py-4 shadow-md"
+	class="bg-background mx-auto flex w-full flex-1 flex-col items-center justify-between gap-6 rounded-lg p-4"
 >
-	<div class="font-mono text-5xl">{bpm} BPM</div>
-	<div class="flex w-full flex-col gap-3 px-4">
-		<Slider
-			min={MIN_BPM}
-			max={MAX_BPM}
-			value={bpm}
-			type="single"
-			onValueChange={(newBpm) => {
-				bpm = newBpm;
-			}}
-		/>
-		<div class="text-muted-foreground -mx-2 flex justify-between text-xs">
-			<span>{MIN_BPM}</span>
-			<span>{MAX_BPM}</span>
+	<div class="flex flex-col items-center gap-4">
+		<div class="flex items-center gap-2">
+			<SignatureDialog bind:beatsPerMeasure bind:beatUnit />
+
+			<div class="text-muted-foreground font-mono text-sm">
+				{beatsPerMeasure}/{beatUnit}
+			</div>
+		</div>
+		<div class="flex w-full justify-center gap-4 pt-2">
+			{#each beatIndicators as idx (idx)}
+				<div
+					class="data-[active=true]:bg-primary bg-muted size-6 rounded-full transition-all"
+					data-active={currentBeat === idx && isPlaying}
+				></div>
+			{/each}
 		</div>
 	</div>
 
-	<div class="flex items-center gap-4">
+	<Button
+		class="flex h-40 w-40 flex-col items-center rounded-full"
+		variant={isPlaying ? 'outline' : 'default'}
+		size="icon"
+		onclick={togglePlay}
+		aria-label={isPlaying ? 'Pause' : 'Play'}
+	>
+		<div class="mt-6 font-mono text-5xl">
+			{bpm}
+		</div>
+		<span class="text-muted-foreground text-lg">BPM</span>
+	</Button>
+
+	<div class="flex w-full items-center gap-4">
 		<Button onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
 			<Minus />
 		</Button>
-		<Button
-			onclick={togglePlay}
-			variant={isPlaying ? 'outline' : 'default'}
-			size="icon"
-			aria-label={isPlaying ? 'Pause' : 'Play'}
-		>
-			<Play class="scale-100 transition-all data-[active=false]:scale-0" data-active={!isPlaying} />
-			<Pause
-				class="absolute scale-0 transition-all data-[active=true]:scale-100"
-				data-active={isPlaying}
+		<div class="flex flex-1 flex-col gap-3">
+			<Slider
+				min={MIN_BPM}
+				max={MAX_BPM}
+				value={bpm}
+				type="single"
+				onValueChange={(newBpm) => {
+					bpm = newBpm;
+				}}
 			/>
-		</Button>
+		</div>
 		<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
 			<Plus />
 		</Button>
-	</div>
-
-	<div class="flex items-center gap-2">
-		<SignatureDialog bind:beatsPerMeasure bind:beatUnit />
-		<div class="text-muted-foreground font-mono text-sm">
-			{beatsPerMeasure}/{beatUnit}
-		</div>
-	</div>
-
-	<div class="flex w-full justify-center gap-2 pt-2">
-		{#each beatIndicators as idx (idx)}
-			<div
-				class="data-[active=true]:bg-primary bg-muted size-3 rounded-full transition-all"
-				data-active={currentBeat === idx && isPlaying}
-			></div>
-		{/each}
 	</div>
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Minus, Plus, Signature } from '@lucide/svelte';
+	import { Minus, Music2, Plus } from '@lucide/svelte';
 
 	import { Button } from './ui/button';
 	import * as Dialog from './ui/dialog';
@@ -31,9 +31,9 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger>
+	<Dialog.Trigger tabindex={-1}>
 		<Button variant="outline" size="icon" aria-label="Time Signature Settings">
-			<Signature />
+			<Music2 />
 		</Button>
 	</Dialog.Trigger>
 	<Dialog.Content>
@@ -52,6 +52,7 @@
 						onclick={() => changeBeats(-1)}
 						size="icon"
 						variant="outline"
+						disabled={beatsPerMeasure === MIN_BEATS}
 						aria-label="Decrease beats"
 					>
 						<Minus />
@@ -63,6 +64,7 @@
 						onclick={() => changeBeats(1)}
 						size="icon"
 						variant="outline"
+						disabled={beatsPerMeasure === MAX_BEATS}
 						aria-label="Increase beats"
 					>
 						<Plus />
@@ -77,17 +79,19 @@
 						onclick={() => changeBeatUnit('down')}
 						size="icon"
 						variant="outline"
+						disabled={beatUnit === VALID_BEAT_UNITS[0]}
 						aria-label="Decrease beat unit"
 					>
 						<Minus />
 					</Button>
-					<span class="w-12 text-center font-mono text-2xl">
+					<span class="w-12 text-center font-mono text-3xl">
 						{beatUnit}
 					</span>
 					<Button
 						onclick={() => changeBeatUnit('up')}
 						size="icon"
 						variant="outline"
+						disabled={beatUnit === VALID_BEAT_UNITS[VALID_BEAT_UNITS.length - 1]}
 						aria-label="Increase beat unit"
 					>
 						<Plus />
@@ -95,11 +99,6 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="text-center font-mono text-3xl font-bold">
-			{beatsPerMeasure}/{beatUnit}
-		</div>
-
 		<Dialog.Footer>
 			<Dialog.Close>
 				<Button variant="secondary">Close</Button>
