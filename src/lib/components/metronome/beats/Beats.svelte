@@ -14,7 +14,7 @@
 	let beatIndicators = $derived(Array.from({ length: beatsPerMeasure }, (_, index) => index));
 </script>
 
-<div class="flex w-full justify-center gap-4 pt-2">
+<div class="flex w-full flex-wrap justify-center gap-4 pt-2">
 	{#each beatIndicators as idx (idx)}
 		<button
 			class="data-[active=true]:bg-primary bg-muted relative size-8 cursor-pointer rounded-full transition-all"

@@ -13,7 +13,7 @@
 
 <ModeWatcher />
 <ParaglideJS {i18n}>
-	<div class="flex min-h-screen flex-col gap-4">
+	<div class="flex min-h-screen flex-col">
 		<Header />
 
 		<main class="mx-auto flex w-full flex-1 flex-col">

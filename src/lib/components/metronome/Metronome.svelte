@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Minus, Plus } from '@lucide/svelte';
+	import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Minus, Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
+	import { KeyboardHint } from '$lib/components/keyboard-hint';
 	import { Button } from '$lib/components/ui/button';
 	import { Slider } from '$lib/components/ui/slider';
 
@@ -146,49 +147,56 @@
 </script>
 
 <div
-	class="bg-background mx-auto flex w-full flex-1 flex-col items-center justify-between gap-6 rounded-lg p-4"
+	class="bg-background mx-auto flex w-full flex-1 flex-col items-center justify-between rounded-lg p-4"
 >
 	<div class="flex flex-col items-center gap-4">
 		<div class="flex items-center gap-2">
 			<SignatureDialog bind:beatsPerMeasure bind:beatUnit />
-
-			<div class="text-muted-foreground font-mono text-sm">
-				{beatsPerMeasure}/{beatUnit}
-			</div>
 		</div>
 		<Beats bind:accentedBeats {beatsPerMeasure} {currentBeat} {isPlaying} />
 	</div>
 
-	<Button
-		class="flex h-40 w-40 flex-col items-center rounded-full"
-		variant={isPlaying ? 'outline' : 'default'}
-		size="icon"
-		onclick={togglePlay}
-		aria-label={isPlaying ? 'Pause' : 'Play'}
-	>
-		<div class="mt-6 font-mono text-5xl">
-			{bpm}
-		</div>
-		<span class="text-muted-foreground text-lg">BPM</span>
-	</Button>
+	<div class="flex flex-col items-center gap-2">
+		<Button
+			class="flex h-40 w-40 flex-col items-center rounded-full"
+			variant={isPlaying ? 'outline' : 'default'}
+			size="icon"
+			onclick={togglePlay}
+			aria-label={isPlaying ? 'Pause' : 'Play'}
+		>
+			<div class="mt-8 font-mono text-5xl">
+				{bpm}
+			</div>
+			<span class="text-muted-foreground text-lg">BPM</span>
+		</Button>
+		<KeyboardHint class="hidden px-2 md:block">space</KeyboardHint>
+	</div>
 
-	<div class="flex w-full items-center gap-4">
-		<Button onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
-			<Minus />
-		</Button>
-		<div class="flex flex-1 flex-col gap-3">
-			<Slider
-				min={MIN_BPM}
-				max={MAX_BPM}
-				value={bpm}
-				type="single"
-				onValueChange={(newBpm) => {
-					bpm = newBpm;
-				}}
-			/>
+	<div class="flex w-full flex-col items-center gap-4">
+		<div class="hidden gap-2 md:flex">
+			<KeyboardHint><ArrowLeft /></KeyboardHint>
+			<KeyboardHint><ArrowDown /></KeyboardHint>
+			<KeyboardHint><ArrowUp /></KeyboardHint>
+			<KeyboardHint><ArrowRight /></KeyboardHint>
 		</div>
-		<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
-			<Plus />
-		</Button>
+		<div class="flex w-full items-center gap-4">
+			<Button onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
+				<Minus />
+			</Button>
+			<div class="flex flex-1 flex-col gap-3">
+				<Slider
+					min={MIN_BPM}
+					max={MAX_BPM}
+					value={bpm}
+					type="single"
+					onValueChange={(newBpm) => {
+						bpm = newBpm;
+					}}
+				/>
+			</div>
+			<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
+				<Plus />
+			</Button>
+		</div>
 	</div>
 </div>
