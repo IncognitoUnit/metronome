@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Minus, Music2, Plus } from '@lucide/svelte';
 
-	import { Button } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	// Time signature state via props
@@ -31,10 +31,12 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger tabindex={-1}>
-		<Button variant="outline" size="icon" aria-label="Time Signature Settings">
-			<Music2 />
-		</Button>
+	<Dialog.Trigger
+		tabindex={-1}
+		class={buttonVariants({ variant: 'outline', size: 'icon' })}
+		aria-label="Time Signature Settings"
+	>
+		<Music2 />
 	</Dialog.Trigger>
 	<Dialog.Content>
 		<Dialog.Header>
