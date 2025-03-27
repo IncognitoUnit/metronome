@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DarkModeToggle from '$lib/components/DarkModeToggle.svelte';
+	import { DarkModeButton } from '$lib/components/dark-mode-button';
 </script>
 
 <header class="flex justify-end p-2">
-	<DarkModeToggle />
+	<DarkModeButton />
 </header>

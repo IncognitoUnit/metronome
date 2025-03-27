@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Metronome from '$lib/components/Metronome.svelte';
+	import { Metronome } from '$lib/components/metronome';
 </script>
 
 <svelte:head>

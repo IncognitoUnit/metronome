@@ -2,19 +2,19 @@
 	import { Minus, Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
-	import SignatureDialog from './SignatureDialog.svelte';
-	import { Button } from './ui/button';
-	import { Slider } from './ui/slider';
+	import { Button } from '$lib/components/ui/button';
+	import { Slider } from '$lib/components/ui/slider';
 
-	// Constraints
-	const MIN_BPM = 20;
-	const MAX_BPM = 240;
-	const STARTING_BEAT = -1;
-
-	// Keyboard codes
-	const PLAY_CODE = new Set(['Space']);
-	const BPM_INCREASE_CODE = new Set(['Equal', 'ArrowRight', 'ArrowUp']);
-	const BPM_DECREASE_CODE = new Set(['Minus', 'ArrowLeft', 'ArrowDown']);
+	import { Beats } from './beats';
+	import {
+		BPM_DECREASE_CODE,
+		BPM_INCREASE_CODE,
+		MAX_BPM,
+		MIN_BPM,
+		PLAY_CODE,
+		STARTING_BEAT,
+	} from './constants';
+	import { SignatureDialog } from './signature-dialog';
 
 	// Metronome state
 	let bpm = $state(MAX_BPM / 2);
@@ -22,9 +22,8 @@
 	let beatsPerMeasure = $state(4);
 	let beatUnit = $state(4);
 	let currentBeat = $state(STARTING_BEAT);
-
-	// Create an array for beat indicators
-	let beatIndicators = $derived(Array.from({ length: beatsPerMeasure }, (_, index) => index));
+	// Beats that play accentuated sound
+	let accentedBeats = $state(new Set<number>([0]));
 
 	// Audio context
 	let audioContext: AudioContext | null = $state(null);
@@ -45,7 +44,6 @@
 		// Only handle keys if no element is actively focused (like inputs, buttons, etc.)
 		// This prevents interference with form controls and other interactive elements
 		const activeElement = document.activeElement;
-		console.log(activeElement);
 		const tagName = activeElement?.tagName.toLowerCase();
 
 		// Skip if the active element is an input, button, textarea, select or has role="button"
@@ -86,17 +84,17 @@
 				// Increment beat and wrap around
 				currentBeat = (currentBeat + 1) % beatsPerMeasure;
 
-				// Create and play a sound, first beat has higher pitch
-				const isFirstBeat = currentBeat === 0;
+				// Create and play a sound, trigger beats have more pronounced sound
+				const triggerSound = accentedBeats.has(currentBeat);
 				const oscillator = audioContext!.createOscillator();
 				const gainNode = audioContext!.createGain();
 
 				oscillator.connect(gainNode);
 				gainNode.connect(audioContext!.destination);
 
-				// Higher frequency for the first beat
-				oscillator.frequency.value = isFirstBeat ? 1500 : 1000;
-				gainNode.gain.value = isFirstBeat ? 1.2 : 1;
+				// Higher frequency for the trigger beats
+				oscillator.frequency.value = triggerSound ? 1500 : 1000;
+				gainNode.gain.value = triggerSound ? 1.2 : 1;
 
 				// Quick fade out
 				gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext!.currentTime + 0.1);
@@ -158,14 +156,7 @@
 				{beatsPerMeasure}/{beatUnit}
 			</div>
 		</div>
-		<div class="flex w-full justify-center gap-4 pt-2">
-			{#each beatIndicators as idx (idx)}
-				<div
-					class="data-[active=true]:bg-primary bg-muted size-6 rounded-full transition-all"
-					data-active={currentBeat === idx && isPlaying}
-				></div>
-			{/each}
-		</div>
+		<Beats bind:accentedBeats {beatsPerMeasure} {currentBeat} {isPlaying} />
 	</div>
 
 	<Button

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Minus, Music2, Plus } from '@lucide/svelte';
 
-	import { Button } from './ui/button';
-	import * as Dialog from './ui/dialog';
+	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	// Time signature state via props
 	let { beatsPerMeasure = $bindable(4), beatUnit = $bindable(4) } = $props();
