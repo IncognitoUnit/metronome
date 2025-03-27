@@ -12,9 +12,9 @@
 	const STARTING_BEAT = -1;
 
 	// Keyboard codes
-	const PLAY_CODE = ['Space'];
-	const BPM_INCREASE_CODE = ['Equal', 'ArrowRight', 'ArrowUp'];
-	const BPM_DECREASE_CODE = ['Minus', 'ArrowLeft', 'ArrowDown'];
+	const PLAY_CODE = new Set(['Space']);
+	const BPM_INCREASE_CODE = new Set(['Equal', 'ArrowRight', 'ArrowUp']);
+	const BPM_DECREASE_CODE = new Set(['Minus', 'ArrowLeft', 'ArrowDown']);
 
 	// Metronome state
 	let bpm = $state(MAX_BPM / 2);
@@ -54,15 +54,15 @@
 		}
 
 		// Process keyboard shortcuts
-		if (PLAY_CODE.includes(event.code)) {
+		if (PLAY_CODE.has(event.code)) {
 			event.preventDefault();
 			togglePlay();
 		}
-		if (BPM_DECREASE_CODE.includes(event.code)) {
+		if (BPM_DECREASE_CODE.has(event.code)) {
 			event.preventDefault();
 			changeBpm(-1);
 		}
-		if (BPM_INCREASE_CODE.includes(event.code)) {
+		if (BPM_INCREASE_CODE.has(event.code)) {
 			event.preventDefault();
 			changeBpm(1);
 		}
