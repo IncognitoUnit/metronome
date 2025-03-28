@@ -1,36 +1,21 @@
 // Play
-const PLAY_CODE = new Set(['Space']);
+export const PLAY_CODE = new Set(['Space']);
 
 // BPM
-const MIN_BPM = 20;
-const MAX_BPM = 240;
-const BPM_INCREASE_CODE = new Set(['ArrowRight', 'ArrowUp']);
-const BPM_DECREASE_CODE = new Set(['ArrowLeft', 'ArrowDown']);
+export const MIN_BPM = 20;
+export const MAX_BPM = 240;
+export const REAL_MAX_BPM = 3000;
+export const BPM_INCREASE_CODE = new Set(['ArrowRight', 'ArrowUp']);
+export const BPM_DECREASE_CODE = new Set(['ArrowLeft', 'ArrowDown']);
 
 // Beats
-const MIN_BEATS = 1;
-const MAX_BEATS = 12;
-const STARTING_BEAT = -1;
-const VALID_BEAT_UNITS = [4, 8, 16];
+export const MIN_BEATS = 1;
+export const MAX_BEATS = 12;
+export const STARTING_BEAT = -1;
+export const VALID_BEAT_UNITS = [4, 8, 16];
 
 // Volume
-const MIN_VOLUME_PERCENT = 0;
-const MAX_VOLUME_PERCENT = 100;
-const VOLUME_INCREASE_CODE = new Set(['Equal']);
-const VOLUME_DECREASE_CODE = new Set(['Minus']);
-
-export {
-	PLAY_CODE,
-	MIN_BPM,
-	MAX_BPM,
-	BPM_INCREASE_CODE,
-	BPM_DECREASE_CODE,
-	MIN_BEATS,
-	MAX_BEATS,
-	STARTING_BEAT,
-	VALID_BEAT_UNITS,
-	VOLUME_INCREASE_CODE,
-	VOLUME_DECREASE_CODE,
-	MIN_VOLUME_PERCENT,
-	MAX_VOLUME_PERCENT,
-};
+export const MIN_VOLUME_PERCENT = 0;
+export const MAX_VOLUME_PERCENT = 100;
+export const VOLUME_INCREASE_CODE = new Set(['Equal']);
+export const VOLUME_DECREASE_CODE = new Set(['Minus']);

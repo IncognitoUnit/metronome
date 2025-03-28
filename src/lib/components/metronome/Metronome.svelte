@@ -6,6 +6,7 @@
 		ArrowUp,
 		ChevronsDown,
 		ChevronsUp,
+		Gauge,
 		Space,
 	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
@@ -18,14 +19,19 @@
 	import {
 		BPM_DECREASE_CODE,
 		BPM_INCREASE_CODE,
-		MAX_BPM,
 		MIN_BPM,
 		PLAY_CODE,
 		VOLUME_DECREASE_CODE,
 		VOLUME_INCREASE_CODE,
 	} from './constants';
 	import { SignatureDialog } from './signature-dialog';
-	import { changeBpm, changeVolume, metronomeState as state, togglePlay } from './state.svelte';
+	import {
+		changeBpm,
+		changeVolume,
+		metronomeState as state,
+		toggleBpmOverdrive,
+		togglePlay,
+	} from './state.svelte';
 	import { VolumeControls } from './volume-controls';
 
 	let clickSchedulerTimerId: ReturnType<typeof setInterval> | null = null;
@@ -142,7 +148,7 @@
 	<div class="flex flex-col items-center gap-2">
 		<Button
 			class="flex h-40 w-40 flex-col items-center rounded-full select-none"
-			variant={state.isPlaying ? 'outline' : 'default'}
+			variant={state.isPlaying ? 'default' : 'outline'}
 			size="icon"
 			onclick={togglePlay}
 			aria-label={state.isPlaying ? 'Pause' : 'Play'}
@@ -170,9 +176,10 @@
 			<div class="flex flex-1 flex-col gap-3">
 				<Slider
 					min={MIN_BPM}
-					max={MAX_BPM}
+					max={state.maxBpm}
 					value={state.bpm}
 					type="single"
+					step={state.bpmStep}
 					onValueChange={(value) => {
 						state.bpm = value;
 					}}
@@ -180,6 +187,14 @@
 			</div>
 			<Button variant="outline" onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
 				<ChevronsUp />
+			</Button>
+			<Button
+				variant={state.bpmOverdrive ? 'destructive' : 'outline'}
+				size="icon"
+				aria-label="Toggle BPM Overdrive"
+				onclick={toggleBpmOverdrive}
+			>
+				<Gauge />
 			</Button>
 		</div>
 	</div>
