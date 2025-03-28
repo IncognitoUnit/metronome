@@ -24,7 +24,6 @@
 		VOLUME_DECREASE_CODE,
 		VOLUME_INCREASE_CODE,
 	} from './constants';
-	import { SignatureDialog } from './signature-dialog';
 	import {
 		changeBpm,
 		changeVolume,
@@ -139,9 +138,6 @@
 	class="bg-background mx-auto flex w-full flex-1 flex-col items-center justify-between rounded-lg p-4"
 >
 	<div class="flex flex-col items-center gap-4">
-		<div class="flex items-center gap-2">
-			<SignatureDialog />
-		</div>
 		<Beats />
 	</div>
 
