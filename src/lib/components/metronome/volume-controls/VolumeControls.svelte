@@ -29,11 +29,12 @@
 	>
 		<VolumeIcon />
 	</Popover.Trigger>
-	<Popover.Content>
+	<Popover.Content class="h-48" sideOffset={8}>
 		<Slider
 			min={MIN_VOLUME_PERCENT}
 			max={MAX_VOLUME_PERCENT}
 			type="single"
+			orientation="vertical"
 			value={state.volumePercent}
 			onValueChange={(value) => {
 				state.volumePercent = value;

@@ -11,9 +11,10 @@
 <SliderPrimitive.Root
 	class={cn(
 		'relative flex touch-none items-center select-none',
-		isVertical ? 'h-full' : 'w-full',
+		isVertical ? 'h-full flex-col' : 'w-full',
 		className,
 	)}
+	{orientation}
 	{...restProps}
 >
 	{#snippet children({ ticks, thumbs })}

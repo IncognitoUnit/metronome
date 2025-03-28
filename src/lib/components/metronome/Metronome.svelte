@@ -135,7 +135,6 @@
 	<div class="flex flex-col items-center gap-4">
 		<div class="flex items-center gap-2">
 			<SignatureDialog />
-			<VolumeControls />
 		</div>
 		<Beats />
 	</div>
@@ -164,6 +163,7 @@
 			<KeyboardHint><ArrowRight size={20} /></KeyboardHint>
 		</div>
 		<div class="flex w-full items-center gap-4">
+			<VolumeControls />
 			<Button variant="outline" onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
 				<ChevronsDown />
 			</Button>
