@@ -2,48 +2,49 @@
 
 A simple metronome app built with Svelte.
 
-## Resources
+# Table of contents
 
-- [Bits UI](https://bits-ui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Svelte](https://svelte.dev/)
-- [Icons](https://lucide.dev/)
+- [Tech stack](#tech-stack)
+- [Setup the project](#setup-the-project)
+- [Running this app](#running-this-app)
+- [Useful commands](#userful-commands)
 
-## sv
+# Tech stack
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+- [Svelte](https://svelte.dev/) - the superior web framework
+- [Tailwind CSS](https://tailwindcss.com/) - utility-first CSS framework
+- [Bits UI](https://bits-ui.com/) - headless components for svelte
+- [Shadcn Svelte](https://www.shadcn-svelte.com/) - svelte port of Shadcn UI (manually ported due to Tailwind v4 incompatibility)
+- [Lucide](https://lucide.dev/) - beautiful & consistent icons
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+# Setup the project
 
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+npm install
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+# Running this app
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
 
-## Building
+# Useful commands
 
-To create a production version of your app:
+## Formatting
 
 ```bash
-npm run build
+npm run format
 ```
 
-You can preview the production build with `npm run preview`.
+## Linting
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run lint
+```
+
+## Lint and fix
+
+```bash
+npm run lint:fix
+```
