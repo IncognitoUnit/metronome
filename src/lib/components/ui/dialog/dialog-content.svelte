@@ -23,7 +23,7 @@
 			class="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 cursor-pointer rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none"
 			aria-label="Close"
 		>
-			<X size={16} />
+			<X size={20} />
 		</DialogPrimitive.Close>
 	</DialogPrimitive.Content>
 </Dialog.Portal>

@@ -1,4 +1,4 @@
-import { MAX_BPM, MIN_BPM, REAL_MAX_BPM, STARTING_BEAT } from './constants';
+import { MAX_BEATS, MAX_BPM, MIN_BEATS, MIN_BPM, REAL_MAX_BPM, STARTING_BEAT } from './constants';
 
 interface MetronomeState {
 	volumePercent: number;
@@ -45,6 +45,13 @@ export function toggleBpmOverdrive() {
 		metronomeState.maxBpm = MAX_BPM;
 		metronomeState.bpmStep = 1;
 	}
+}
+
+export function changeBeats(change: number) {
+	metronomeState.beatsPerMeasure = Math.max(
+		Math.min(metronomeState.beatsPerMeasure + change, MAX_BEATS),
+		MIN_BEATS,
+	);
 }
 
 export function changeBpm(change: number) {
