@@ -4,10 +4,10 @@
 	let beatIndicators = $derived(Array.from({ length: state.beatsPerMeasure }, (_, index) => index));
 </script>
 
-<div class="flex w-full flex-wrap justify-center gap-4 pt-2">
+<div class="group flex w-full flex-wrap justify-center gap-4 pt-2" data-pulse={state.showPulse}>
 	{#each beatIndicators as idx (idx)}
 		<button
-			class="data-[active=true]:bg-primary bg-muted relative size-8 cursor-pointer rounded-full transition-all"
+			class="group-data-[pulse=true]:data-[active=true]:bg-primary bg-muted relative size-8 cursor-pointer rounded-full transition-all duration-50"
 			data-active={state.currentBeat === idx && state.isPlaying}
 			aria-label={`Beat ${idx + 1} Toggle Accent`}
 			onclick={() => {

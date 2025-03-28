@@ -1,31 +1,48 @@
-import { MAX_BEATS, MAX_BPM, MIN_BEATS, MIN_BPM, REAL_MAX_BPM, STARTING_BEAT } from './constants';
+import {
+	MAX_BEATS,
+	MAX_BPM,
+	MIN_BEATS,
+	MIN_BPM,
+	REAL_MAX_BPM,
+	Rhythm,
+	STARTING_BEAT,
+} from './constants';
 
 interface MetronomeState {
-	volumePercent: number;
 	isPlaying: boolean;
+	volumePercent: number;
 
 	bpm: number;
 	maxBpm: number;
 	bpmStep: number;
 	bpmOverdrive: boolean;
+
 	beatsPerMeasure: number;
-	beatUnit: number;
 	currentBeat: number;
 	accentedBeats: Set<number>;
+
+	currentPattern: Rhythm;
+	showPulse: boolean;
+
 	audioContext: AudioContext | null;
 }
 
 export const metronomeState = $state<MetronomeState>({
+	isPlaying: false,
 	volumePercent: 50,
+
 	bpm: MAX_BPM / 2,
 	maxBpm: MAX_BPM,
 	bpmStep: 1,
 	bpmOverdrive: false,
+
 	beatsPerMeasure: 4,
-	beatUnit: 4,
 	currentBeat: STARTING_BEAT,
 	accentedBeats: new Set<number>([0]),
-	isPlaying: false,
+
+	currentPattern: Rhythm.Normal,
+	showPulse: false,
+
 	audioContext: null,
 });
 
@@ -47,7 +64,7 @@ export function toggleBpmOverdrive() {
 	}
 }
 
-export function changeBeats(change: number) {
+export function changePulses(change: number) {
 	metronomeState.beatsPerMeasure = Math.max(
 		Math.min(metronomeState.beatsPerMeasure + change, MAX_BEATS),
 		MIN_BEATS,

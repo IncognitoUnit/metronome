@@ -21,6 +21,7 @@
 		BPM_INCREASE_CODE,
 		MIN_BPM,
 		PLAY_CODE,
+		RHYTHM_PATTERNS,
 		VOLUME_DECREASE_CODE,
 		VOLUME_INCREASE_CODE,
 	} from './constants';
@@ -76,27 +77,32 @@
 		}
 
 		if (state.isPlaying) {
+			const pattern = RHYTHM_PATTERNS[state.currentPattern];
 			// Convert BPM to milliseconds between beats
 			const intervalMs = 60000 / state.bpm;
 
-			clickSchedulerTimerId = setInterval(() => {
-				// Increment beat and wrap around
-				state.currentBeat = (state.currentBeat + 1) % state.beatsPerMeasure;
+			let pulseIndex = 0;
 
-				// Create and play a sound, trigger beats have more pronounced sound
-				const triggerSound = state.accentedBeats.has(state.currentBeat);
+			clickSchedulerTimerId = setInterval(() => {
+				const isMainPulse = pulseIndex % pattern.length === 0;
+				const triggerBeat = isMainPulse && state.accentedBeats.has(state.currentBeat);
+
 				const oscillator = state.audioContext!.createOscillator();
 				const gainNode = state.audioContext!.createGain();
 
 				oscillator.connect(gainNode);
 				gainNode.connect(state.audioContext!.destination);
 
-				// Higher frequency for the trigger beats
-				oscillator.frequency.value = triggerSound ? 1500 : 1000;
-
-				// Apply volume from state
+				// Adjust sound properties
 				const volumeGain = state.volumePercent / 100;
-				const baseGain = triggerSound ? 1.2 : 1;
+				let baseGain = 1;
+				if (isMainPulse && triggerBeat) {
+					oscillator.frequency.value = 1500;
+					baseGain = 1.1;
+				} else {
+					oscillator.frequency.value = 1000;
+					baseGain = 1;
+				}
 				gainNode.gain.value = baseGain * volumeGain;
 
 				// Quick fade out
@@ -104,6 +110,15 @@
 
 				oscillator.start();
 				oscillator.stop(state.audioContext!.currentTime + 0.1);
+
+				pulseIndex++;
+				state.showPulse = true;
+				setTimeout(() => {
+					if (pulseIndex % pattern.length === 0) {
+						state.currentBeat = (state.currentBeat + 1) % state.beatsPerMeasure;
+					}
+					state.showPulse = false;
+				}, 100);
 			}, intervalMs);
 		}
 	}

@@ -11,8 +11,19 @@ export const BPM_DECREASE_CODE = new Set(['ArrowLeft', 'ArrowDown']);
 // Beats
 export const MIN_BEATS = 1;
 export const MAX_BEATS = 12;
-export const STARTING_BEAT = -1;
-export const VALID_BEAT_UNITS = [4, 8, 16];
+export const STARTING_BEAT = 0;
+
+// Rhythm
+export enum Rhythm {
+	Normal = 'Normal',
+	Eights = 'Eights',
+	Triplets = 'Triplets',
+}
+export const RHYTHM_PATTERNS: Record<Rhythm, number[]> = {
+	[Rhythm.Normal]: [1],
+	[Rhythm.Eights]: [1, 1],
+	[Rhythm.Triplets]: [1, 1, 1],
+};
 
 // Volume
 export const MIN_VOLUME_PERCENT = 0;
