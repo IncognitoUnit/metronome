@@ -1,20 +1,29 @@
 <script lang="ts">
-	import { Slider as SliderPrimitive } from 'bits-ui';
+	import { Slider as SliderPrimitive, type SliderRootProps } from 'bits-ui';
 
 	import { cn } from '$lib/utils';
 
-	import { type Props } from './index';
+	let { orientation, class: className, ...restProps }: SliderRootProps = $props();
 
-	let { class: className, ...restProps }: Props = $props();
+	let isVertical = $derived(orientation === 'vertical');
 </script>
 
 <SliderPrimitive.Root
-	class={cn('relative flex w-full touch-none items-center select-none', className)}
+	class={cn(
+		'relative flex touch-none items-center select-none',
+		isVertical ? 'h-full' : 'w-full',
+		className,
+	)}
 	{...restProps}
 >
 	{#snippet children({ ticks, thumbs })}
-		<span class="bg-secondary relative h-2 w-full grow overflow-hidden rounded-full">
-			<SliderPrimitive.Range class="bg-primary absolute h-full" />
+		<span
+			class={cn(
+				'bg-secondary relative grow overflow-hidden rounded-full',
+				isVertical ? 'h-full w-2' : 'h-2 w-full',
+			)}
+		>
+			<SliderPrimitive.Range class={cn('bg-primary absolute', isVertical ? 'w-full' : 'h-full')} />
 		</span>
 		{#each thumbs as index (index)}
 			<SliderPrimitive.Thumb

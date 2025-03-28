@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Minus, Plus } from '@lucide/svelte';
+	import {
+		ArrowDown,
+		ArrowLeft,
+		ArrowRight,
+		ArrowUp,
+		ChevronsDown,
+		ChevronsUp,
+		Space,
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	import { KeyboardHint } from '$lib/components/keyboard-hint';
@@ -13,36 +21,23 @@
 		MAX_BPM,
 		MIN_BPM,
 		PLAY_CODE,
-		STARTING_BEAT,
+		VOLUME_DECREASE_CODE,
+		VOLUME_INCREASE_CODE,
 	} from './constants';
 	import { SignatureDialog } from './signature-dialog';
-	import { metronomeState as state } from './state.svelte';
+	import { changeBpm, changeVolume, metronomeState as state, togglePlay } from './state.svelte';
+	import { VolumeControls } from './volume-controls';
 
 	let clickSchedulerTimerId: ReturnType<typeof setInterval> | null = null;
 
-	function changeBpm(change: number) {
-		state.bpm = Math.max(Math.min(state.bpm + change, MAX_BPM), MIN_BPM);
-	}
-
-	function togglePlay() {
-		state.isPlaying = !state.isPlaying;
-		if (state.isPlaying) {
-			state.currentBeat = STARTING_BEAT;
-		}
-	}
-
 	function handleKeyup(event: KeyboardEvent) {
-		// Only handle keys if no element is actively focused (like inputs, buttons, etc.)
-		// This prevents interference with form controls and other interactive elements
 		const activeElement = document.activeElement;
 		const tagName = activeElement?.tagName.toLowerCase();
 
-		// Skip if the active element is an input, button, textarea, select or has role="button"
 		if (activeElement && tagName !== 'body') {
 			return;
 		}
 
-		// Process keyboard shortcuts
 		if (PLAY_CODE.has(event.code)) {
 			event.preventDefault();
 			togglePlay();
@@ -55,10 +50,18 @@
 			event.preventDefault();
 			changeBpm(1);
 		}
+		if (VOLUME_DECREASE_CODE.has(event.code)) {
+			event.preventDefault();
+			changeVolume(-1);
+		}
+		if (VOLUME_INCREASE_CODE.has(event.code)) {
+			event.preventDefault();
+			changeVolume(1);
+		}
 	}
 
 	function scheduleClicks() {
-		if (!state.audioContext) {
+		if (!state.audioContext || state.audioContext.state === 'closed') {
 			state.audioContext = new AudioContext();
 		}
 
@@ -85,7 +88,11 @@
 
 				// Higher frequency for the trigger beats
 				oscillator.frequency.value = triggerSound ? 1500 : 1000;
-				gainNode.gain.value = triggerSound ? 1.2 : 1;
+
+				// Apply volume from state
+				const volumeGain = state.volumePercent / 100;
+				const baseGain = triggerSound ? 1.2 : 1;
+				gainNode.gain.value = baseGain * volumeGain;
 
 				// Quick fade out
 				gainNode.gain.exponentialRampToValueAtTime(0.001, state.audioContext!.currentTime + 0.1);
@@ -96,12 +103,10 @@
 		}
 	}
 
-	// Reactive effect to manage scheduling
 	$effect(() => {
 		if (state.isPlaying) {
 			scheduleClicks();
 		} else {
-			// Stop scheduled clicks when metronome is paused
 			if (clickSchedulerTimerId) {
 				clearInterval(clickSchedulerTimerId);
 				clickSchedulerTimerId = null;
@@ -109,18 +114,7 @@
 		}
 	});
 
-	// Track time signature changes
-	$effect(() => {
-		// If time signature changes while playing, restart
-		if (state.isPlaying) {
-			// Reset current beat and reschedule
-			state.currentBeat = STARTING_BEAT;
-			scheduleClicks();
-		}
-	});
-
 	onMount(() => {
-		// Add keyboard event listener when component mounts
 		window.addEventListener('keyup', handleKeyup);
 
 		return () => {
@@ -130,7 +124,6 @@
 			if (state.audioContext) {
 				state.audioContext.close();
 			}
-			// Remove event listener when component unmounts
 			window.removeEventListener('keyup', handleKeyup);
 		};
 	});
@@ -142,6 +135,7 @@
 	<div class="flex flex-col items-center gap-4">
 		<div class="flex items-center gap-2">
 			<SignatureDialog />
+			<VolumeControls />
 		</div>
 		<Beats />
 	</div>
@@ -159,7 +153,7 @@
 			</div>
 			<span class="text-muted-foreground text-lg">BPM</span>
 		</Button>
-		<KeyboardHint class="hidden px-2 md:block">space</KeyboardHint>
+		<KeyboardHint class="hidden px-3 md:block"><Space /></KeyboardHint>
 	</div>
 
 	<div class="flex w-full flex-col items-center gap-4">
@@ -171,7 +165,7 @@
 		</div>
 		<div class="flex w-full items-center gap-4">
 			<Button variant="outline" onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
-				<Minus />
+				<ChevronsDown />
 			</Button>
 			<div class="flex flex-1 flex-col gap-3">
 				<Slider
@@ -179,13 +173,13 @@
 					max={MAX_BPM}
 					value={state.bpm}
 					type="single"
-					onValueChange={(newBpm) => {
-						state.bpm = newBpm;
+					onValueChange={(value) => {
+						state.bpm = value;
 					}}
 				/>
 			</div>
 			<Button variant="outline" onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
-				<Plus />
+				<ChevronsUp />
 			</Button>
 		</div>
 	</div>

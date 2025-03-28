@@ -30,7 +30,6 @@
 
 <Dialog.Root>
 	<Dialog.Trigger
-		tabindex={-1}
 		class={buttonVariants({ variant: 'outline', size: 'icon' })}
 		aria-label="Time Signature Settings"
 	>
@@ -57,7 +56,7 @@
 					>
 						<Minus />
 					</Button>
-					<span class="w-12 text-center font-mono text-2xl">
+					<span class="w-12 text-center font-mono text-3xl">
 						{state.beatsPerMeasure}
 					</span>
 					<Button
