@@ -158,7 +158,7 @@
 
 	<div class="flex flex-col items-center gap-2">
 		<Button
-			class="flex h-40 w-40 flex-col items-center rounded-full"
+			class="flex h-40 w-40 flex-col items-center rounded-full select-none"
 			variant={isPlaying ? 'outline' : 'default'}
 			size="icon"
 			onclick={togglePlay}
@@ -174,13 +174,13 @@
 
 	<div class="flex w-full flex-col items-center gap-4">
 		<div class="hidden gap-2 md:flex">
-			<KeyboardHint><ArrowLeft /></KeyboardHint>
-			<KeyboardHint><ArrowDown /></KeyboardHint>
-			<KeyboardHint><ArrowUp /></KeyboardHint>
-			<KeyboardHint><ArrowRight /></KeyboardHint>
+			<KeyboardHint><ArrowLeft size={20} /></KeyboardHint>
+			<KeyboardHint><ArrowDown size={20} /></KeyboardHint>
+			<KeyboardHint><ArrowUp size={20} /></KeyboardHint>
+			<KeyboardHint><ArrowRight size={20} /></KeyboardHint>
 		</div>
 		<div class="flex w-full items-center gap-4">
-			<Button onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
+			<Button variant="outline" onclick={() => changeBpm(-1)} size="icon" aria-label="Decrease BPM">
 				<Minus />
 			</Button>
 			<div class="flex flex-1 flex-col gap-3">
@@ -194,7 +194,7 @@
 					}}
 				/>
 			</div>
-			<Button onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
+			<Button variant="outline" onclick={() => changeBpm(1)} size="icon" aria-label="Increase BPM">
 				<Plus />
 			</Button>
 		</div>
