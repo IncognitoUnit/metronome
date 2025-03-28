@@ -16,28 +16,18 @@
 		STARTING_BEAT,
 	} from './constants';
 	import { SignatureDialog } from './signature-dialog';
+	import { metronomeState as state } from './state.svelte';
 
-	// Metronome state
-	let bpm = $state(MAX_BPM / 2);
-	let isPlaying = $state(false);
-	let beatsPerMeasure = $state(4);
-	let beatUnit = $state(4);
-	let currentBeat = $state(STARTING_BEAT);
-	// Beats that play accentuated sound
-	let accentedBeats = $state(new Set<number>([0]));
-
-	// Audio context
-	let audioContext: AudioContext | null = $state(null);
 	let clickSchedulerTimerId: ReturnType<typeof setInterval> | null = null;
 
 	function changeBpm(change: number) {
-		bpm = Math.max(Math.min(bpm + change, MAX_BPM), MIN_BPM);
+		state.bpm = Math.max(Math.min(state.bpm + change, MAX_BPM), MIN_BPM);
 	}
 
 	function togglePlay() {
-		isPlaying = !isPlaying;
-		if (isPlaying) {
-			currentBeat = STARTING_BEAT;
+		state.isPlaying = !state.isPlaying;
+		if (state.isPlaying) {
+			state.currentBeat = STARTING_BEAT;
 		}
 	}
 
@@ -68,8 +58,8 @@
 	}
 
 	function scheduleClicks() {
-		if (!audioContext) {
-			audioContext = new AudioContext();
+		if (!state.audioContext) {
+			state.audioContext = new AudioContext();
 		}
 
 		if (clickSchedulerTimerId) {
@@ -77,38 +67,38 @@
 			clickSchedulerTimerId = null;
 		}
 
-		if (isPlaying) {
+		if (state.isPlaying) {
 			// Convert BPM to milliseconds between beats
-			const intervalMs = 60000 / bpm;
+			const intervalMs = 60000 / state.bpm;
 
 			clickSchedulerTimerId = setInterval(() => {
 				// Increment beat and wrap around
-				currentBeat = (currentBeat + 1) % beatsPerMeasure;
+				state.currentBeat = (state.currentBeat + 1) % state.beatsPerMeasure;
 
 				// Create and play a sound, trigger beats have more pronounced sound
-				const triggerSound = accentedBeats.has(currentBeat);
-				const oscillator = audioContext!.createOscillator();
-				const gainNode = audioContext!.createGain();
+				const triggerSound = state.accentedBeats.has(state.currentBeat);
+				const oscillator = state.audioContext!.createOscillator();
+				const gainNode = state.audioContext!.createGain();
 
 				oscillator.connect(gainNode);
-				gainNode.connect(audioContext!.destination);
+				gainNode.connect(state.audioContext!.destination);
 
 				// Higher frequency for the trigger beats
 				oscillator.frequency.value = triggerSound ? 1500 : 1000;
 				gainNode.gain.value = triggerSound ? 1.2 : 1;
 
 				// Quick fade out
-				gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext!.currentTime + 0.1);
+				gainNode.gain.exponentialRampToValueAtTime(0.001, state.audioContext!.currentTime + 0.1);
 
 				oscillator.start();
-				oscillator.stop(audioContext!.currentTime + 0.1);
+				oscillator.stop(state.audioContext!.currentTime + 0.1);
 			}, intervalMs);
 		}
 	}
 
 	// Reactive effect to manage scheduling
 	$effect(() => {
-		if (isPlaying) {
+		if (state.isPlaying) {
 			scheduleClicks();
 		} else {
 			// Stop scheduled clicks when metronome is paused
@@ -122,9 +112,9 @@
 	// Track time signature changes
 	$effect(() => {
 		// If time signature changes while playing, restart
-		if (isPlaying) {
+		if (state.isPlaying) {
 			// Reset current beat and reschedule
-			currentBeat = STARTING_BEAT;
+			state.currentBeat = STARTING_BEAT;
 			scheduleClicks();
 		}
 	});
@@ -137,8 +127,8 @@
 			if (clickSchedulerTimerId) {
 				clearInterval(clickSchedulerTimerId);
 			}
-			if (audioContext) {
-				audioContext.close();
+			if (state.audioContext) {
+				state.audioContext.close();
 			}
 			// Remove event listener when component unmounts
 			window.removeEventListener('keyup', handleKeyup);
@@ -151,21 +141,21 @@
 >
 	<div class="flex flex-col items-center gap-4">
 		<div class="flex items-center gap-2">
-			<SignatureDialog bind:beatsPerMeasure bind:beatUnit />
+			<SignatureDialog />
 		</div>
-		<Beats bind:accentedBeats {beatsPerMeasure} {currentBeat} {isPlaying} />
+		<Beats />
 	</div>
 
 	<div class="flex flex-col items-center gap-2">
 		<Button
 			class="flex h-40 w-40 flex-col items-center rounded-full select-none"
-			variant={isPlaying ? 'outline' : 'default'}
+			variant={state.isPlaying ? 'outline' : 'default'}
 			size="icon"
 			onclick={togglePlay}
-			aria-label={isPlaying ? 'Pause' : 'Play'}
+			aria-label={state.isPlaying ? 'Pause' : 'Play'}
 		>
 			<div class="mt-8 font-mono text-5xl">
-				{bpm}
+				{state.bpm}
 			</div>
 			<span class="text-muted-foreground text-lg">BPM</span>
 		</Button>
@@ -187,10 +177,10 @@
 				<Slider
 					min={MIN_BPM}
 					max={MAX_BPM}
-					value={bpm}
+					value={state.bpm}
 					type="single"
 					onValueChange={(newBpm) => {
-						bpm = newBpm;
+						state.bpm = newBpm;
 					}}
 				/>
 			</div>

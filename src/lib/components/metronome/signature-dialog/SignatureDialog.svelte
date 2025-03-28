@@ -4,20 +4,18 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	// Time signature state via props
-	let { beatsPerMeasure = $bindable(4), beatUnit = $bindable(4) } = $props();
-
-	// Constraints
-	const MIN_BEATS = 1;
-	const MAX_BEATS = 12;
-	const VALID_BEAT_UNITS = [4, 8, 16];
+	import { MAX_BEATS, MIN_BEATS, VALID_BEAT_UNITS } from '../constants';
+	import { metronomeState as state } from '../state.svelte';
 
 	function changeBeats(change: number) {
-		beatsPerMeasure = Math.max(Math.min(beatsPerMeasure + change, MAX_BEATS), MIN_BEATS);
+		state.beatsPerMeasure = Math.max(
+			Math.min(state.beatsPerMeasure + change, MAX_BEATS),
+			MIN_BEATS,
+		);
 	}
 
 	function changeBeatUnit(direction: 'up' | 'down') {
-		const currentIndex = VALID_BEAT_UNITS.indexOf(beatUnit);
+		const currentIndex = VALID_BEAT_UNITS.indexOf(state.beatUnit);
 		let newIndex: number;
 
 		if (direction === 'up') {
@@ -26,7 +24,7 @@
 			newIndex = currentIndex > 0 ? currentIndex - 1 : VALID_BEAT_UNITS.length - 1;
 		}
 
-		beatUnit = VALID_BEAT_UNITS[newIndex];
+		state.beatUnit = VALID_BEAT_UNITS[newIndex];
 	}
 </script>
 
@@ -54,19 +52,19 @@
 						onclick={() => changeBeats(-1)}
 						size="icon"
 						variant="outline"
-						disabled={beatsPerMeasure === MIN_BEATS}
+						disabled={state.beatsPerMeasure === MIN_BEATS}
 						aria-label="Decrease beats"
 					>
 						<Minus />
 					</Button>
 					<span class="w-12 text-center font-mono text-2xl">
-						{beatsPerMeasure}
+						{state.beatsPerMeasure}
 					</span>
 					<Button
 						onclick={() => changeBeats(1)}
 						size="icon"
 						variant="outline"
-						disabled={beatsPerMeasure === MAX_BEATS}
+						disabled={state.beatsPerMeasure === MAX_BEATS}
 						aria-label="Increase beats"
 					>
 						<Plus />
@@ -81,19 +79,19 @@
 						onclick={() => changeBeatUnit('down')}
 						size="icon"
 						variant="outline"
-						disabled={beatUnit === VALID_BEAT_UNITS[0]}
+						disabled={state.beatUnit === VALID_BEAT_UNITS[0]}
 						aria-label="Decrease beat unit"
 					>
 						<Minus />
 					</Button>
 					<span class="w-12 text-center font-mono text-3xl">
-						{beatUnit}
+						{state.beatUnit}
 					</span>
 					<Button
 						onclick={() => changeBeatUnit('up')}
 						size="icon"
 						variant="outline"
-						disabled={beatUnit === VALID_BEAT_UNITS[VALID_BEAT_UNITS.length - 1]}
+						disabled={state.beatUnit === VALID_BEAT_UNITS[VALID_BEAT_UNITS.length - 1]}
 						aria-label="Increase beat unit"
 					>
 						<Plus />
